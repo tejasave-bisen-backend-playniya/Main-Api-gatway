@@ -1,16 +1,31 @@
 const express = require('express');
 const app = express();
+const port = 5007;
+
 app.use(express.json());
 
-app.get('/auth', (req, res) => {
-  res.json({ message: 'Auth service: Login successful (GET)' });
+// Health check endpoint
+app.get('/auth/health', (req, res) => {
+    res.json({ status: 'Auth service is healthy' });
 });
 
-app.post('/auths', (req, res) => {
-  res.json({ message: 'Auth service: Login successful (POST)', body: req.body });
+// Login endpoint
+app.post('/auth/login', (req, res) => {
+    const { username, password } = req.body;
+
+    if (username === 'admin' && password === 'password') {
+        return res.json({ message:"username === 'admin' && password === 'password'"});
+    }
+
+    res.status(401).json({ error: 'Invalid credentials' });
 });
 
-app.listen(5008, "127.0.0.1", () => {
-  console.log('Auth service running on http://127.0.0.1:5008');
+// Register endpoint
+app.post('/auth/register', (req, res) => {
+    const { username } = req.body;
+    res.json({ message: `User ${username} registered successfully.` });
 });
 
+app.listen(port, () => {
+    console.log(`Auth Service running on http://localhost:${port}`);
+});
